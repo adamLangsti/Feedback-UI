@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 type FeedbackListProps = {
     feedback: any;
-    handleDelete: number;
+    handleDelete: any;
 };
 
 export default function FeedbackList({
