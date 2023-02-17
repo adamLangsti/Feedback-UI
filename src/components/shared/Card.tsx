@@ -11,7 +11,7 @@ export default function Card({ children, reverse }: CardProps) {
 }
 
 Card.defaultProps = {
-    reverse: true,
+    reverse: false,
 };
 
 Card.protoTypes = {
