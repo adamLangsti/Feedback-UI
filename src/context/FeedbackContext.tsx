@@ -14,11 +14,11 @@ export const FeedbackProvider = ({ children }) => {
         fetchFeedback();
     }, []);
 
-    const backendURL = 'http://localhost:5000/feedback?_sort=id&_order=desc';
-
     // Fetch feedback from backend
     async function fetchFeedback() {
-        const response = await fetch(backendURL);
+        const response = await fetch(
+            'http://localhost:5000/feedback?_sort=id&_order=desc'
+        );
         const responseJson = await response.json();
         setFeedback(responseJson);
         setIsLoading(false);
@@ -26,13 +26,16 @@ export const FeedbackProvider = ({ children }) => {
 
     // Add new feedback to backend
     async function addFeedback(newFeedback: any) {
-        const response = await fetch(backendURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newFeedback),
-        });
+        const response = await fetch(
+            'http://localhost:5000/feedback?_sort=id&_order=desc',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newFeedback),
+            }
+        );
 
         const responseJson = await response.json();
 
@@ -43,24 +46,35 @@ export const FeedbackProvider = ({ children }) => {
     async function deleteFeedback(id: number) {
         // if (window.confirm('Are you sure you want to delete your feedback?')) {
         // }
+        await fetch(`http://localhost:5000/feedback/${id}`, {
+            method: 'DELETE',
+        });
         setFeedback(feedback.filter((item) => item.id !== id));
     }
 
     // Update feedback from backend
+    async function updateFeedback(id: number, updateItem) {
+        const reponse = await fetch(`http://localhost:5000/feedback/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateItem),
+        });
+
+        const responseJson = await reponse.json();
+
+        setFeedback(
+            feedback.map((item) =>
+                item.id === id ? { ...item, ...responseJson } : item
+            )
+        );
+    }
+
     async function editFeedback(item) {
         setFeedbackEdit({
             item,
             edit: true,
         });
     }
-
-    const updateFeedback = (id: number, updateItem) => {
-        setFeedback(
-            feedback.map((item) =>
-                item.id === id ? { ...item, ...updateItem } : item
-            )
-        );
-    };
 
     return (
         <FeedbackContext.Provider
